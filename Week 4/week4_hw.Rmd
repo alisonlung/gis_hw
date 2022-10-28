@@ -1,0 +1,38 @@
+---
+title: "wk4_hw"
+output: html_document
+date: "2022-10-28"
+---
+Importing libraries:
+```{r}
+library(countrycode)
+library(tidyverse)
+library(here)
+```
+Load Files:
+```{r}
+completecsv <- read_csv("HDR21-22_Composite_indices_complete_time_series.csv",
+                        na = "NA")
+countries <- read_csv("World_Countries_(Generalized).csv")
+```
+csv manipulation:
+```{r}
+gii <- completecsv %>% 
+  dplyr::select(contains("country"), 
+         contains("gii_2010"),
+         contains("gii_2019"))%>%
+   na.omit()%>%
+   mutate(difference_gii = (gii_2019-gii_2010))
+
+
+```
+Join tables:
+```{r}
+joined_gii <- gii%>%
+  clean_names()%>%
+  left_join(.,
+            countries,
+            by = c("country"="COUNTRY"))
+```
+
+
