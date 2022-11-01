@@ -7,32 +7,43 @@ Importing libraries:
 ```{r}
 library(countrycode)
 library(tidyverse)
+library(janitor)
 library(here)
+library(sf)
 ```
 Load Files:
 ```{r}
-completecsv <- read_csv("HDR21-22_Composite_indices_complete_time_series.csv",
+completecsv <- read.csv("HDR21-22_Composite_indices_complete_time_series.csv",
                         na = "NA")
-countries <- read_csv("World_Countries_(Generalized).csv")
+countries <- st_read("World_Countries_Generalized\\World_Countries__Generalized_.shp")
 ```
 csv manipulation:
 ```{r}
 gii <- completecsv %>% 
-  dplyr::select(contains("country"), 
-         contains("gii_2010"),
-         contains("gii_2019"))%>%
+  dplyr::select(contains("iso3"),
+                contains("country"), 
+                contains("gii_2010"),
+                contains("gii_2019"))%>%
+   slice(1:195)%>%
    na.omit()%>%
    mutate(difference_gii = (gii_2019-gii_2010))
 
 
 ```
+
+iso code:
+```{r}
+gii$iso = countrycode(gii$iso3,"iso3c","iso2c")
+```
+
+
 Join tables:
 ```{r}
 joined_gii <- gii%>%
-  clean_names()%>%
   left_join(.,
             countries,
-            by = c("country"="COUNTRY"))
+            by = c("iso"="AFF_ISO"))%>%
+    clean_names()
 ```
 
 
