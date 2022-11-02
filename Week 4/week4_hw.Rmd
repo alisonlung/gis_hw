@@ -42,7 +42,7 @@ Join tables:
 joined_gii <- gii%>%
   left_join(.,
             countries,
-            by = c("iso"="AFF_ISO"))%>%
+            by = c("iso"="ISO"))%>%
     clean_names()
 ```
 
